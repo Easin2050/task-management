@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
+</head>
+<body>
+    <div class="w-1/2 mx-auto bg-gray-100 p-6 rounded-lg shadow-lg">
+        <div>{% if message %}
+            <p>{{message}}</p>
+        {% endif %}</div>
+    <form method="POST">
+        {% comment %} <input type="text" class="border-2 border-gray-300 w-full rounded-lg shadow-sm focus:border-rose-500 focus:ring-rose-500" placeholder="Enter task title"> {% endcomment %}
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="bg-rose-600 px-3 py-2 rounded-md text-white">submit</button>
+    </form>
+    </div>
+</body>
+</html>
