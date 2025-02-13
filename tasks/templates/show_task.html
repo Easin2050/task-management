@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
+    {% comment %} <div>
         {% comment %} {{tasks}} {% endcomment %}
-         {% for task in tasks %}
+         {% comment %} {% for task in tasks %}
          <li>{{task.status}}</li>
          {% endfor %}
          <div>
@@ -16,7 +16,38 @@
          </div>
          <div>
             {{first_task}}
-         </div>
-    </div>
+         </div> {% endcomment %}
+    {% comment %} </div> {% endcomment %} 
+     <div>
+        {% comment %} <ul>
+            {% for task in tasks %}
+            <li> {% endcomment %}
+                {% comment %} <p>{{task.task.title}}</p> {% endcomment %}
+                {% comment %} <p>{{task.title}}</p> {% endcomment %}
+                {% comment %} <span>{{task.priority}}</span> {% endcomment %}
+                {% comment %} <span>{{task.project.priority}}</span>
+            </li>{% endfor %}
+        </ul> {% endcomment %}
+        {% comment %} <ol>
+            {% for project in tasks %}
+            <li>
+                {% comment %} <p>{{task.task.title}}</p> {% endcomment %}
+                {% comment %} <p>{{project.name}}</p> {% endcomment %}
+                {% comment %} <span>{{task.priority}}</span> {% endcomment %}
+                 {% comment %} {% for task in project.task_set.all %}<p>{{task.title}}</p>{% endfor %}
+                
+            </li>{% endfor %}
+        </ol> {% endcomment %}
+        {% comment %} <p>{{task_count.num_task}}</p> {% endcomment %}
+         {% for project in projects  %}
+         <li>
+            <p>{{project.name}}</p>
+            <p>{{project.num_task}}</p>
+         </li>
+         {% endfor %}
+     </div>
+     {% comment %} <div>
+        {{tasks}}
+     </div> {% endcomment %}
 </body>
 </html>
