@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+</head>
+<body>
+    <p class="lal-bg">Task Management System</p>  
+    <img src="{% static "images/jahid.jpg" %}" alt="">
+    {% with count=0 %}
+    {% for name in names %}
+    {% if name=="John" %}
+    <p>{{name}}</p>
+    {% endif %}
+    {{count|add:"1"}}
+    {% endfor %}
+    {{count}}
+    {% endwith %}
+</body>
+</html>
