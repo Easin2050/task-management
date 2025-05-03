@@ -11,10 +11,13 @@ from users.views import is_admin
 def is_manager(user):
     return user.groups.filter(name='Manager').exists()
 
+def is_manager_or_admin(user):
+    return is_manager(user) or is_admin(user)
+
 def is_employee(user):
     return user.groups.filter(name='Employee').exists()
 
-@user_passes_test(is_manager or is_admin, login_url='no-permission')
+@user_passes_test(is_manager_or_admin, login_url='no-permission')
 def manager_dashboard(request):
      type=request.GET.get('type','all')
           

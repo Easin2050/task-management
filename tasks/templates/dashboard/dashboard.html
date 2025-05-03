@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<div class='w-[1450px] mx-auto'>
+<div class='w-[1350px] mx-auto'>
    {% comment %} Stats Grid  {% endcomment %}
-   <div class="grid grid-cols-4 gap-6 my-8">
+   <div class="grid grid-cols-4 gap-4 my-8 px-4">
     <!-- Total Task  -->
     <a href="{% url 'manager-dashboard' %}">
     <div class="bg-white rounded-xl p-6 shadow-sm">
@@ -121,8 +121,8 @@
             <div class="px-2 py-1 {% if message.tags == 'success' %}bg-green-500{% endif %} ">{{message}}</div>
         {% endfor %}
     {% endif %}
-</div>
-  {% block tasks %}
+    <div class="max-w-[1350px] mx-auto px-6">
+      {% block tasks %}
   
   {% endblock tasks %}
 </div>
