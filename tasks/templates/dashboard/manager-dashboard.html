@@ -1,41 +1,45 @@
 {% extends "dashboard/dashboard.html" %}
- {% block tasks %}
-  <!-- Task Table -->
-  <div class="bg-white rounded-xl shadow-sm">
-    <div class="grid grid-cols-4 p-6 border-b border-gray-100 text-gray-500">
-        <div>TASK TITLE</div>
-        <div>PRIORITY</div>
-        <div>TEAM</div>
-        <div>CREATED AT</div>
+{% block title %}Manager Dashboard{% endblock title %}
+{% block tasks %}
+<!-- Task Table  -->
+<div class="bg-white rounded-xl shadow-sm mb-11">
+    <div
+      class="grid grid-cols-4 p-4 border-b border-gray-100 text-sm text-gray-500"
+    >
+      <div>TASK TITLE</div>
+      <div>PRIORITY</div>
+      <div>TEAM</div>
+      <div>CREATED AT</div>
     </div>
-     <!-- Task Items -->
-      {% for task in tasks %}
-      <div class="divide-y divide-gray-100">
-        <div class="grid grid-cols-4 p-6 gap-4 items-center">
+    <!-- Task Items  -->
+    <div class="divide-y divide-gray-100">
+     {% for task in tasks %}
+       <!-- Task 1 -->
+       <div class="grid grid-cols-4 gap-4 p-4 items-center">
         <div class="flex items-center gap-2">
-            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>{{task.title}}</span>
-            {% comment %} <span>{{task.status}}</span> {% endcomment %}
-             <a href='{% url "update-task" task.id %}' class="px-2 py-1 bg-green-500">Edit</a>
-             <form action="{% url "delete-task" task.id %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="px-2 py-1 bg-red-500">Delete</button>
-             </form>
-            </div>
+          <div class="w-2 h-2 rounded-full bg-green-500"></div>
+          <a href="{% url 'task-details' task.id %}">{{task.title}}</a>
+        </div>
         <div>
-            <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-600">{{task.details.get_priority_display}}</span>
+          <span
+            class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm"
+            >{{task.details.get_priority_display}}</span
+          >
         </div>
         <div class="flex -space-x-2">
-        {% for emp in task.assigned_to.all %}
-        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
-            {{emp.name|slice:':2'}}
+          {% for emp in task.assigned_to.all %}
+          <div
+          class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white"
+        >
+          {{emp.first_name|slice:':1'|upper}}
         </div>
-        {% endfor %}
+          {% endfor %}
         </div>
-        <div>
-            <span class="text-gray-500">{{task.created_at|timesince}}</span>
-        </div>
-     </div>
-      {% endfor %}
+        <div class="text-gray-500">{{task.created_at|timesince}}</div>
       </div>
-</div>{% endblock tasks %}
+     {% endfor %}
+
+    </div>
+  </div>
+
+  {% endblock tasks %}
