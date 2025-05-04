@@ -7,6 +7,22 @@ from django.db.models import Q,Count,Max,Min,Avg
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test,login_required,permission_required
 from users.views import is_admin
+from django.http import HttpResponse
+from django.views import View
+
+#class Based view Re-use example
+class Greetings(View):
+     greetings='Hello Everyone'
+
+     def get(self,request):
+          return HttpResponse(self.greetings)
+     
+class Higreetings(Greetings):
+     greetings='Hi everyone'
+
+class HiHowgreetings(Greetings):
+     greetings='Hi everyone,How are you'
+
 
 def is_manager(user):
     return user.groups.filter(name='Manager').exists()
