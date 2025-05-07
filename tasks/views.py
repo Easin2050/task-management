@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import user_passes_test,login_required,permi
 from users.views import is_admin
 from django.http import HttpResponse
 from django.views import View
+from django.utils.decorators import method_decorator
 
 #class Based view Re-use example
 class Greetings(View):
@@ -98,6 +99,33 @@ def create_task(request):
      context={"task_form":task_form,"task_detail_form":task_detail_form}
      return render(request,"task_form.html",context)
 
+#Variables for list of decorators
+create_decorators=[login_required,permission_required("tasks.add_task", login_url='no-permission')]
+@method_decorator(create_decorators,name='dispatch')
+class CreateTask(View):
+     '''For creating task using Class model view'''
+     template_name='task_form.html'
+     def get(self,request,*args, **kwargs):
+          # print(request.user)
+          task_form=TaskModelForm()
+          task_detail_form=TaskDetailModelForm()
+
+          context={"task_form":task_form,"task_detail_form":task_detail_form}
+          return render(request,self.template_name,context)
+     
+     def post(self,request,*args, **kwargs):
+          # print(request.user)
+          task_form=TaskModelForm(request.POST) 
+          task_detail_form=TaskDetailModelForm(request.POST, request.FILES)
+          if task_form.is_valid() and task_detail_form.is_valid():
+               """For Model for Data"""
+               task=task_form.save()
+               task_detail=task_detail_form.save(commit=False)
+               task_detail.task=task
+               task_detail.save()
+               messages.success(request,'Task created successfully')
+               return redirect('create-task')
+          
 @login_required
 @permission_required("tasks.view_task", login_url='no-permission')
 def view_task(request):
