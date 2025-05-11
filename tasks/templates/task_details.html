@@ -89,15 +89,14 @@
           <div>
             {% comment %} <a href='{% url "update-task" task.id %}' class="px-2 py-1 bg-green-500">Edit</a> {% endcomment %}
             <div class="flex justify-start gap-4">
-              <form action='{% url "update-task" task.id %}' method='POST'>
-                {% csrf_token %}
+              <a href="{% url 'update-task' task.id %}">
                 <button
                   class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                  type="submit"
+                  type="button"
                 >
                   Edit Task
                 </button>
-              </form>
+              </a>
             <form action='{% url "delete-task" task.id %}' method='POST'>
               {% csrf_token %}
               <button

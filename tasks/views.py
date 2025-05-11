@@ -94,7 +94,7 @@ def view_task(request):
 @permission_required("tasks.change_task", login_url='no-permission')
 def update_task(request, id):
     task = Task.objects.get(id=id)
-    task_form = TaskModelForm(instance=task)
+    task_form = TaskModelForm(instance=task)  # For GET
 
     if task.details:
         task_detail_form = TaskDetailModelForm(instance=task.details)
@@ -117,6 +117,7 @@ def update_task(request, id):
 
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
     return render(request, "task_form.html", context)
+
 
 @login_required
 @permission_required("tasks.delete_task", login_url='no-permission')
