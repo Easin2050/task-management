@@ -268,6 +268,8 @@ def task_details(request, task_id):
 
     return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
 
+task_detail_decorators=[login_required,permission_required("tasks.view_task", login_url='no-permission')]
+@method_decorator(decorator=task_detail_decorators,name="dispatch")
 class TaskDetail(DetailView):
     model = Task
     template_name = 'task_details.html'
