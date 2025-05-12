@@ -13,6 +13,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.base import ContextMixin
+from django.views.generic import ListView
+
 
 #class Based view Re-use example
 class Greetings(View):
@@ -144,10 +146,21 @@ class CreateTask(ContextMixin,LoginRequiredMixin,PermissionRequiredMixin,View):
 @login_required
 @permission_required("tasks.view_task", login_url='no-permission')
 def view_task(request):
-     
      projects=Project.objects.annotate(num_task=Count('task')).order_by('num_task')
      return render(request,"show_task.html",{"projects":projects})
 
+
+view_project_decorators=[login_required,permission_required("projects.view_project", login_url='no-permission')]
+
+@method_decorator(decorator=view_project_decorators,name="dispatch")
+class ViewProject(ListView):
+     model=Project
+     context_object_name ='projects'
+     template_name ='show_task.html'
+
+     def get_queryset(self):
+          query_set=Project.objects.annotate(num_task=Count('task')).order_by('num_task')
+          return query_set
 
 @login_required
 @permission_required("tasks.change_task", login_url='no-permission')
