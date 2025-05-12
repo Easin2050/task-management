@@ -14,6 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView
+from django.views.generic import DetailView
 
 
 #class Based view Re-use example
@@ -266,6 +267,27 @@ def task_details(request, task_id):
         return redirect('task-details', task.id)
 
     return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
+
+class TaskDetail(DetailView):
+    model = Task
+    template_name = 'task_details.html'
+    context_object_name = 'task'
+    pk_url_kwarg = 'task_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # {"task": task}
+        # {"task": task, 'status_choices': status_choices}
+        context['status_choices'] = Task.STATUS_CHOICES
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+
+
 
 @login_required
 def dashboard(request):
