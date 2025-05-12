@@ -177,51 +177,52 @@ def update_task(request, id):
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
     return render(request, "task_form.html", context)
 
-# class UpdateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
-#     template_name = 'task_form.html'
-#     login_url = 'sign-in'
-#     permission_required = 'tasks.change_task'
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['task_form'] = kwargs.get('task_form', TaskModelForm())
-#         context['task_detail_form'] = kwargs.get('task_detail_form', TaskDetailModelForm())
-#         return context
+class UpdateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
+    template_name = 'task_form.html'
+    login_url = 'sign-in'
+    permission_required = 'tasks.change_task'
 
-#     def get(self, request, *args, **kwargs):
-#         task_id = kwargs.get('id') 
-#         task = Task.objects.get(id=task_id)
-#         task_form = TaskModelForm(instance=task)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task_form'] = kwargs.get('task_form', TaskModelForm())
+        context['task_detail_form'] = kwargs.get('task_detail_form', TaskDetailModelForm())
+        return context
 
-#         if task.details:
-#             task_detail_form = TaskDetailModelForm(instance=task.details)
-#         else:
-#             task_detail_form = TaskDetailModelForm()
+    def get(self, request, *args, **kwargs):
+        task_id = kwargs.get('id') 
+        task = Task.objects.get(id=task_id)
+        task_form = TaskModelForm(instance=task)
 
-#         context = self.get_context_data(task_form=task_form, task_detail_form=task_detail_form)
-#         return render(request, self.template_name, context)
+        if task.details:
+            task_detail_form = TaskDetailModelForm(instance=task.details)
+        else:
+            task_detail_form = TaskDetailModelForm()
 
-#     def post(self, request, *args, **kwargs):
-#         task_id = kwargs.get('id')
-#         task = Task.objects.get(id=task_id)
-#         task_form = TaskModelForm(request.POST, instance=task)
+        context = self.get_context_data(task_form=task_form, task_detail_form=task_detail_form)
+        return render(request, self.template_name, context)
 
-#         if task.details:
-#             task_detail_form = TaskDetailModelForm(request.POST, instance=task.details)
-#         else:
-#             task_detail_form = TaskDetailModelForm(request.POST)
+    def post(self, request, *args, **kwargs):
+        task_id = kwargs.get('id')
+        task = Task.objects.get(id=task_id)
+        task_form = TaskModelForm(request.POST, instance=task)
 
-#         if task_form.is_valid() and task_detail_form.is_valid():
-#             task = task_form.save()  
-#             task_detail = task_detail_form.save(commit=False)
-#             task_detail.task = task  
-#             task_detail.save()
+        if task.details:
+            task_detail_form = TaskDetailModelForm(request.POST, instance=task.details)
+        else:
+            task_detail_form = TaskDetailModelForm(request.POST)
 
-#             messages.success(request, "Task Updated Successfully")
-#             return redirect('update-task', id=task.id)
+        if task_form.is_valid() and task_detail_form.is_valid():
+            task = task_form.save()  
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task  
+            task_detail.save()
 
-#         context = self.get_context_data(task_form=task_form, task_detail_form=task_detail_form)
-#         return render(request, self.template_name, context)
+            messages.success(request, "Task Updated Successfully")
+            return redirect('update-task', id=task.id)
+
+        context = self.get_context_data(task_form=task_form, task_detail_form=task_detail_form)
+        return render(request, self.template_name, context)
 
 
 
