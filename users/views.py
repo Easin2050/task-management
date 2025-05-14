@@ -134,15 +134,16 @@ class ProfileView(TemplateView):
     template_name='accounts/profile.html'
 
     def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         user=self.request.user
-        context['username']=user.username
-        context['email']=user.email
-        context['name']=user.get_full_name()
+        context["username"] = user.username
+        context["email"] = user.email
+        context["name"] = user.get_full_name()
         context['member_since']=user.date_joined
         context['last_login']=user.last_login
-        print(context)
+        # print(context)
         return context
+    
 
 """ 
 
