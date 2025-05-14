@@ -1,5 +1,6 @@
 from django.urls import path
-from users.views import sign_up, sign_in, sign_out, activate_user, admin_dashboard, assign_role, create_group, group_list,CustomLoginView
+from users.views import ProfileView,sign_up, sign_in, sign_out, activate_user, admin_dashboard, assign_role, create_group, group_list,CustomLoginView
+# from django.views.generic import TemplateView
 
 urlpatterns = [
     path('sign-up/', sign_up, name='sign-up'),
@@ -10,5 +11,7 @@ urlpatterns = [
     path('admin/dashboard/', admin_dashboard, name='admin-dashboard'),
     path('admin/<int:user_id>/assign-role/', assign_role, name='assign-role'),
     path('admin/create-group/', create_group, name='create-group'),
-    path('admin/group-list/', group_list, name='group-list')
+    path('admin/group-list/', group_list, name='group-list'),
+    # path('profile-view/',TemplateView.as_view(template_name='accounts/profile.html'),name='profile-view')
+    path('profile-view/',ProfileView.as_view(),name='profile-view')
 ]
