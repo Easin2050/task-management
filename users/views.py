@@ -10,7 +10,7 @@ from django.db.models import Prefetch
 from django.contrib.auth.views import LoginView,PasswordChangeView,PasswordResetView,PasswordResetDoneView,PasswordResetCompleteView,PasswordResetConfirmView
 from django.views.generic import TemplateView,UpdateView
 from django.urls import reverse_lazy
-from users.models import UserProfile
+# from users.models import UserProfile
 # Create your views here.
 
 # Test for users
@@ -184,7 +184,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         messages.success(
             self.request,"Password reset successfully")
         return super().form_valid(form)
-
+'''
 class EditProfileView(UpdateView):
     model = User
     form_class = EditProfileForm
@@ -210,6 +210,21 @@ class EditProfileView(UpdateView):
     def form_valid(self, form):
         form.save(commit=True)
         return redirect('profile-view')
+'''
+
+class EditProfileView(UpdateView):
+    model = User
+    form_class = EditProfileForm
+    template_name = 'accounts/update_profile.html'
+    context_object_name = 'form'
+
+    def get_object(self):
+        return self.request.user
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('profile-view')
+
 """ 
 
     Admin
