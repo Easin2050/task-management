@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models  import Group
 from django.contrib.auth import login, logout
 from users.forms import CustomRegistrationForm, AssignRoleForm, CreateGroupForm,CustomPasswordChangeForm,CustomPasswordResetForm,CustomPasswordResetConfirmForm,EditProfileForm
 from django.contrib import messages
@@ -12,6 +12,11 @@ from django.views.generic import TemplateView,UpdateView
 from django.urls import reverse_lazy
 # from users.models import UserProfile
 # Create your views here.
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+
 
 # Test for users
 def is_admin(user):
@@ -147,8 +152,8 @@ class ProfileView(TemplateView):
         context["name"] = user.get_full_name()
         context['member_since']=user.date_joined
         context['last_login']=user.last_login
-        context['bio']=user.userprofile.bio
-        context['profile_image']=user.userprofile.profile_image
+        context['bio']=user.bio
+        context['profile_image']=user.profile_image
         print(context)
         return context
     
