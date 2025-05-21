@@ -3,12 +3,12 @@ import re
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Permission, Group
 from tasks.forms import StyledFormMixin
-from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm,PasswordResetForm,SetPasswordForm
-# from users.models import UserProfile
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from users.models import CustomUser
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
 
 class RegisterForm(UserCreationForm):
     class Meta:
@@ -89,7 +89,8 @@ class AssignRoleForm(StyledFormMixin, forms.Form):
         queryset=Group.objects.all(),
         empty_label="Select a Role"
     )
-    
+
+
 class CreateGroupForm(StyledFormMixin, forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
@@ -97,21 +98,25 @@ class CreateGroupForm(StyledFormMixin, forms.ModelForm):
         required=False,
         label='Assign Permission'
     )
-    
+
     class Meta:
         model = Group
         fields = ['name', 'permissions']
 
-class CustomPasswordChangeForm(StyledFormMixin,PasswordChangeForm):
+
+class CustomPasswordChangeForm(StyledFormMixin, PasswordChangeForm):
     pass
 
-class CustomPasswordResetForm(StyledFormMixin,PasswordResetForm):
+
+class CustomPasswordResetForm(StyledFormMixin, PasswordResetForm):
     pass
 
-class CustomPasswordResetConfirmForm(StyledFormMixin,SetPasswordForm):
+
+class CustomPasswordResetConfirmForm(StyledFormMixin, SetPasswordForm):
     pass
 
-'''
+
+"""
 class EditProfileForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = User
@@ -124,6 +129,7 @@ class EditProfileForm(StyledFormMixin, forms.ModelForm):
         self.userprofile = kwargs.pop('userprofile', None)
         super().__init__(*args, **kwargs)
         print("forms", self.userprofile)
+
         # Todo: Handle Error
 
         if self.userprofile:
@@ -146,10 +152,10 @@ class EditProfileForm(StyledFormMixin, forms.ModelForm):
             user.save()
 
         return user
-    
-'''
+"""
 
-class EditProfileForm(StyledFormMixin,forms.ModelForm):
+
+class EditProfileForm(StyledFormMixin, forms.ModelForm):
     class Meta:
-        model=CustomUser
-        fields=['email','first_name','last_name','bio','profile_image']
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name', 'bio', 'profile_image']

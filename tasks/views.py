@@ -16,8 +16,6 @@ from django.views.generic.base import ContextMixin
 from django.views.generic import ListView, DetailView, UpdateView,DeleteView
 from django.urls import reverse_lazy
 
-# Class Based View Re-use example
-
 
 class Greetings(View):
     greetings = 'Hello Everyone'
@@ -157,18 +155,11 @@ def create_task(request):
 create_decorators = [login_required, permission_required(
     "tasks.add_task", login_url='no-permission')]
 
-
 class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
     """ For creating task """
     permission_required = 'tasks.add_task'
     login_url = 'sign-in'
     template_name = 'task_form.html'
-
-    """ 
-    0. Create Task
-    1. LoginRequiredMixin
-    2. PermissionRequiredMixin
-    """
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -234,6 +225,7 @@ update_task_decorators = [
     user_passes_test(is_manager, login_url='no-permission'),
     permission_required('task.change_tasks', login_url='no-permission')
 ]
+@method_decorator(decorator=update_task_decorators,name='dispatch')
 class UpdateTask(UpdateView):
     model = Task
     form_class = TaskModelForm
