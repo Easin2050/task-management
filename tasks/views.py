@@ -26,7 +26,39 @@ def is_manager_or_admin(user):
 def is_employee(user):
     return user.groups.filter(name='Employee').exists()
 
-@user_passes_test(is_manager_or_admin, login_url='no-permission')
+manager_dashboard_decorators=[user_passes_test(is_manager_or_admin, login_url='no-permission')]
+@method_decorator(decorator=manager_dashboard_decorators,name='dispatch')
+class ManagerDashboard(ListView):
+    model=Task
+    template_name="dashboard/manager-dashboard.html"
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        type = self.request.GET.get('type', 'all')
+        base_query = Task.objects.select_related('details').prefetch_related('assigned_to')
+
+        if type == 'completed':
+            return base_query.filter(status='COMPLETED')
+        elif type == 'in-progress':
+            return base_query.filter(status='IN_PROGRESS')
+        elif type == 'pending':
+            return base_query.filter(status='PENDING')
+        else:
+            return base_query.all()
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        context['counts'] =Task.objects.aggregate(
+          total=Count('id'),
+          completed=Count('id',filter=Q(status='COMPLETED')),
+          in_progress=Count('id',filter=Q(status='IN_PROGRESS')),
+          pending=Count('id',filter=Q(status='PENDING')),
+          )
+        context['role'] = 'manager'
+        return context
+
+
+'''@user_passes_test(is_manager_or_admin, login_url='no-permission')
 def manager_dashboard(request):
      type=request.GET.get('type','all')
           
@@ -54,7 +86,7 @@ def manager_dashboard(request):
           "role": 'manager'
      }
      return render(request,"dashboard/manager-dashboard.html",context)
-
+'''
 
 @user_passes_test(is_employee)
 def user_dashboard(request):
@@ -66,7 +98,7 @@ def employee_dashboard(request):
     return render(request, "dashboard/user-dashboard.html")
 
 
-@login_required
+'''@login_required
 @permission_required("tasks.add_task", login_url='no-permission')
 def create_task(request):
      task_form=TaskModelForm()
@@ -83,10 +115,9 @@ def create_task(request):
                messages.success(request,'Task created successfully')
                return redirect('create-task')
           
-               
      context={"task_form":task_form,"task_detail_form":task_detail_form}
      return render(request,"task_form.html",context)
-
+'''
 
 create_decorators=[login_required,permission_required("tasks.add_task", login_url='no-permission')]
 @method_decorator(create_decorators,name='dispatch') # When we are using login required mixin then we don't need to use this method.
@@ -142,7 +173,7 @@ class ViewProject(ListView):
           query_set=Project.objects.annotate(num_task=Count('task')).order_by('num_task')
           return query_set
 
-@login_required
+'''@login_required
 @permission_required("tasks.change_task", login_url='no-permission')
 def update_task(request, id):
     task = Task.objects.get(id=id)
@@ -168,7 +199,7 @@ def update_task(request, id):
             return redirect('update-task', id)
 
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
-    return render(request, "task_form.html", context)
+    return render(request, "task_form.html", context)'''
 
 
 '''class UpdateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -284,7 +315,32 @@ def delete_task(request,id):
           messages.error(request,"Something went wrong")
           return redirect('manager-dashboard')'''
 
-@login_required
+
+'''task_details_decorators=[login_required,permission_required("tasks.view_task", login_url='no-permission')]
+@method_decorator(decorator=task_details_decorators,name="dispatch")
+class TaskDetail(View):
+    model=Task
+    template_name='task_details.html'
+    pk_url_kwarg = 'task_id'
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["status_choices"] =Task.STATUS_CHOICES
+        context["task"] = self.get_object()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        selected_status = request.POST.get('task_status')
+        if selected_status:
+            task.status = selected_status
+            task.save()
+            messages.success(request, "Task status updated successfully")
+        else:
+            messages.error(request, "Failed to update task status")
+        return redirect('task-details', task.id)'''
+
+'''@login_required
 @permission_required("tasks.view_task", login_url='no-permission')
 def task_details(request, task_id):
     task = Task.objects.get(id=task_id)
@@ -297,7 +353,7 @@ def task_details(request, task_id):
         task.save()
         return redirect('task-details', task.id)
 
-    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
+    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})'''
 
 task_detail_decorators=[login_required,permission_required("tasks.view_task", login_url='no-permission')]
 @method_decorator(decorator=task_detail_decorators,name="dispatch")
